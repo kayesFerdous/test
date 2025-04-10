@@ -1,5 +1,6 @@
-# Define the folder and URL
-$gubFolder = "C:\GubTool"
+
+# Set target folder and URL
+$gubFolder = "$env:USERPROFILE\GubTool"
 $gubUrl = "https://github.com/kayesFerdous/test/releases/download/v1.0.1/gub.exe"  # Replace with real link
 $exePath = "$gubFolder\gub.exe"
 
@@ -8,19 +9,18 @@ if (!(Test-Path -Path $gubFolder)) {
     New-Item -ItemType Directory -Path $gubFolder -Force | Out-Null
 }
 
-# Download the gub.exe file
+# Download gub.exe
 Invoke-WebRequest -Uri $gubUrl -OutFile $exePath -UseBasicParsing
 
-# Get current system PATH
-$systemPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
+# Add folder to USER PATH if it's not already there
+$userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
 
-# Add folder to system PATH if not already present
-if (-not ($systemPath -split ";" | ForEach-Object { $_.Trim() }) -contains $gubFolder) {
-    $newSystemPath = "$systemPath;$gubFolder"
-    [Environment]::SetEnvironmentVariable("Path", $newSystemPath, [EnvironmentVariableTarget]::Machine)
-    Write-Host "✅ Added $gubFolder to SYSTEM PATH."
+if (-not ($userPath -split ";" | ForEach-Object { $_.Trim() }) -contains $gubFolder) {
+    $newUserPath = "$userPath;$gubFolder"
+    [System.Environment]::SetEnvironmentVariable("Path", $newUserPath, "User")
+    Write-Host "✅ Added $gubFolder to USER PATH."
 } else {
-    Write-Host "ℹ️ $gubFolder is already in SYSTEM PATH."
+    Write-Host "ℹ️ $gubFolder already in PATH."
 }
 
-Write-Host "`n🎉 Done! Restart your terminal or log out and back in to use 'gub' globally."
+Write-Host "`n🎉 Done! Please restart PowerShell or Command Prompt to use 'gub.exe' from anywhere."
