@@ -1,27 +1,26 @@
-# PowerShell Script to Download gub.exe and Add it to PATH
-
-# Step 1: Define variables
+# Define the folder and URL
 $gubFolder = "C:\GubTool"
 $gubUrl = "https://github.com/kayesFerdous/test/releases/download/v1.0.1/gub.exe"  # Replace with real link
 $exePath = "$gubFolder\gub.exe"
 
-# Step 2: Create target directory if it doesn't exist
+# Create folder if it doesn't exist
 if (!(Test-Path -Path $gubFolder)) {
-    New-Item -ItemType Directory -Path $gubFolder -Force
+    New-Item -ItemType Directory -Path $gubFolder -Force | Out-Null
 }
 
-# Step 3: Download gub.exe
-Invoke-WebRequest -Uri $gubUrl -OutFile $exePath
+# Download the gub.exe file
+Invoke-WebRequest -Uri $gubUrl -OutFile $exePath -UseBasicParsing
 
-# Step 4: Add to system PATH (if not already in PATH)
-$envPath = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
+# Get current system PATH
+$systemPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
 
-if (-not $envPath.Split(";") -contains $gubFolder) {
-    [System.Environment]::SetEnvironmentVariable("Path", "$envPath;$gubFolder", [System.EnvironmentVariableTarget]::Machine)
-    Write-Host "✔️ Added $gubFolder to system PATH."
+# Add folder to system PATH if not already present
+if (-not ($systemPath -split ";" | ForEach-Object { $_.Trim() }) -contains $gubFolder) {
+    $newSystemPath = "$systemPath;$gubFolder"
+    [Environment]::SetEnvironmentVariable("Path", $newSystemPath, [EnvironmentVariableTarget]::Machine)
+    Write-Host "✅ Added $gubFolder to SYSTEM PATH."
 } else {
-    Write-Host "ℹ️ $gubFolder is already in system PATH."
+    Write-Host "ℹ️ $gubFolder is already in SYSTEM PATH."
 }
 
-# Step 5: Done
-Write-Host "`n🎉 Done! You can now run 'gub.exe' from anywhere. Please restart Command Prompt or your system to apply PATH changes."
+Write-Host "`n🎉 Done! Restart your terminal or log out and back in to use 'gub' globally."
