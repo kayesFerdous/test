@@ -4,7 +4,7 @@ set -e
 
 BINARY_NAME="gub"
 INSTALL_DIR="$HOME/.local/bin"
-BINARY_URL="https://github.com/kayesFerdous/test/releases/download/1.0/$BINARY_NAME"
+BINARY_URL="https://github.com/kayesFerdous/test/releases/download/v1.0.0/$BINARY_NAME"
 
 echo "📦 Downloading $BINARY_NAME from GitHub..."
 mkdir -p "$INSTALL_DIR"
